@@ -9,8 +9,8 @@
 
 <img src="sefaz-scraper.png" alt="Golang" width="200" />
 
-Scraper em Go que acessa diretamente o portal da SEFAZ, baixa todos os arquivos **XSD** disponíveis e organiza tudo em uma pasta atualizada no repositório.  
-Além disso, o projeto já está preparado para rodar em **GitHub Actions** e manter esses XSD sempre atualizados automaticamente.
+Scraper em **Go** que acessa diretamente o portal da SEFAZ, baixa todos os arquivos **XSD** disponíveis e organiza tudo em uma pasta atualizada no repositório.  
+Além disso, o projeto já está preparado para rodar em **GitHub Actions** e manter esses XSD sempre atualizados automaticamente e criar um release zipado atualizado.
 
 Perfeito para projetos que trabalham com **NF-e / CT-e / MDF-e / eventos SEFAZ** e querem ter os XSD localmente, versionados e sempre atualizados.
 
@@ -78,7 +78,7 @@ sefaz-scraper/
 
 ## 🔧 Como usar localmente
 
-### 1. Clonar o repositório
+### 1. 🧬 Clonar o repositório
 
 ```bash
 git clone https://github.com/fabyo/sefaz-scraper.git
@@ -86,7 +86,13 @@ cd sefaz-scraper
 go mod tidy
 ```
 
-### 2. Rodar o scraper
+### 2. 🧱 Compilando para binário
+
+```bash
+go build -o scraper main.go
+```
+
+### 3. 🏃‍♂️ Rodar o scraper
 
 ```bash
 go run ./sefaz-scraper
@@ -98,13 +104,7 @@ Ou, se já estiver com **binário**:
 ./scraper
 ```
 
-### 3. 🧱 Compilando para binário
-
-```bash
-go build -o scraper main.go
-```
-
-### 4. Parâmetros / Configuração
+### 4. ⚙️ Parâmetros / Configuração
 
 Exemplos de configurações que podem existir:
 
@@ -238,7 +238,7 @@ Você pode usar este repo de algumas formas:
 ## ✅ Objetivo
 
 - Ter um repositório que **sempre** tenha os XSD oficiais da SEFAZ atualizados.
-- Ser fácil de plugar em qualquer projeto que precise validar XML de NFe/CT-e/MDF-e.
+- Ser fácil de plugar em qualquer projeto que precise validar **XML de NFe/CT-e/MDF-e**.
 - Evitar cópia manual de XSD e fontes desatualizadas.
 
 ---
