@@ -83,7 +83,6 @@ sefaz-scraper/
 ```bash
 git clone https://github.com/fabyo/sefaz-scraper.git
 cd sefaz-scraper
-# se quiser compilar: "go build -o scraper main.go"
 go mod tidy
 ```
 
@@ -99,7 +98,13 @@ Ou, se já estiver com **binário**:
 ./scraper
 ```
 
-### 3. Parâmetros / Configuração (exemplo)
+### 3. 🧱 Compilando para binário
+
+```bash
+go build -o scraper main.go
+```
+
+### 4. Parâmetros / Configuração
 
 Exemplos de configurações que podem existir:
 
