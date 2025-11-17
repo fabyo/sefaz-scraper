@@ -118,7 +118,7 @@ go run ./cmd/sefaz-scraper --output-dir=./schemas --headless=true
 ## 🤖 Atualização automática com GitHub Actions
 
 A ideia é simples:  
-O GitHub Actions roda o scraper periodicamente, e se houver mudança nos XSD, ele faz commit no próprio repositório.
+O GitHub Actions roda o scraper periodicamente, e se houver mudança nos XSD, ele faz commit no próprio repositório e cria um release novo.
 
 ### Exemplo de workflow (`.github/workflows/update-xsd.yml`)
 
