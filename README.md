@@ -63,7 +63,7 @@ require (
 ```bash
 sefaz-scraper/
 ├─ main.go        # Ponto de entrada CLI
-├─ schemas/             # Pasta gerada com os XSD baixados
+├─ schemas/       # Pasta gerada com os XSD baixados
 ├─ .github/
 │  └─ workflows/
 │     └─ update-xsd.yml # GitHub Action para atualização automática
