@@ -84,6 +84,7 @@ sefaz-scraper/
 git clone https://github.com/fabyo/sefaz-scraper.git
 cd sefaz-scraper
 # se quiser compilar: "go build -o scraper main.go"
+go mod tidy
 ```
 
 ### 2. Rodar o scraper
@@ -171,7 +172,7 @@ Você pode usar este repo de algumas formas:
 2. **Importando como módulo Go (se exposto)**  
 
    ```go
-   import "github.com/seu-usuario/sefaz-scraper/internal/scraper"
+   import "github.com/fabyo/sefaz-scraper"
    ```
 
 3. **Somente XSD versionado**  
@@ -184,21 +185,6 @@ Você pode usar este repo de algumas formas:
 - Ter um repositório que **sempre** tenha os XSD oficiais da SEFAZ atualizados.
 - Ser fácil de plugar em qualquer projeto que precise validar XML de NFe/CT-e/MDF-e.
 - Evitar cópia manual de XSD e fontes desatualizadas.
-
----
-
-## 🛣️ Roadmap (ideias)
-
-- Suporte a múltiplos endpoints SEFAZ (produção/homologação, NFe, CT-e, MDF-e, eventos).
-- Geração de um `manifest.json` com metadados dos XSD (versão, data, URL original, hash).
-- Opção de log detalhado e modo debug.
-- Testes automatizados de integridade (hash/alteração inesperada).
-
----
-
-## 📜 Licença
-
-Defina aqui a licença que preferir (MIT, Apache 2.0, etc).
 
 ---
 
