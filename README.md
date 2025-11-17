@@ -9,10 +9,10 @@
 
 <img src="sefaz-scraper.png" alt="Golang" width="200" />
 
-Scraper em Go que acessa diretamente o portal da SEFAZ, baixa todos os arquivos **XSD** disponíveis e organiza tudo em uma estrutura de pastas bonitinha no repositório.  
+Scraper em Go que acessa diretamente o portal da SEFAZ, baixa todos os arquivos **XSD** disponíveis e organiza tudo em uma pasta atualizada no repositório.  
 Além disso, o projeto já está preparado para rodar em **GitHub Actions** e manter esses XSD sempre atualizados automaticamente.
 
-Perfeito para projetos que trabalham com **NF-e / CT-e / MDF-e / eventos SEFAZ** e querem ter os XSD localmente, versionados e sempre frescos.
+Perfeito para projetos que trabalham com **NF-e / CT-e / MDF-e / eventos SEFAZ** e querem ter os XSD localmente, versionados e sempre atualizados.
 
 ---
 
@@ -58,17 +58,11 @@ require (
 
 ---
 
-## 📂 Estrutura (sugestão)
+## 📂 Estrutura
 
 ```bash
 sefaz-scraper/
-├─ cmd/
-│  └─ sefaz-scraper/
-│     └─ main.go        # Ponto de entrada CLI
-├─ internal/
-│  ├─ scraper/          # Lógica de scraping da SEFAZ
-│  ├─ downloader/       # Download e escrita dos arquivos XSD
-│  └─ config/           # Configurações (flags/env/etc)
+├─ main.go        # Ponto de entrada CLI
 ├─ schemas/             # Pasta gerada com os XSD baixados
 ├─ .github/
 │  └─ workflows/
@@ -87,20 +81,21 @@ sefaz-scraper/
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/sefaz-scraper.git
+git clone https://github.com/fabyo/sefaz-scraper.git
 cd sefaz-scraper
+# se quiser compilar: "go build -o scraper main.go"
 ```
 
 ### 2. Rodar o scraper
 
 ```bash
-go run ./cmd/sefaz-scraper
+go run ./sefaz-scraper
 ```
 
-Ou, se já estiver com binário instalado:
+Ou, se já estiver com **binário**:
 
 ```bash
-sefaz-scraper
+./scraper
 ```
 
 ### 3. Parâmetros / Configuração (exemplo)
