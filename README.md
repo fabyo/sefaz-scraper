@@ -115,6 +115,57 @@ go run ./cmd/sefaz-scraper --output-dir=./schemas --headless=true
 
 ---
 
+## 🐘 Usando os XSD no PHP (via Composer)
+
+Se você está em um projeto PHP e quer apenas **consumir os XSD já baixados** pelo `sefaz-scraper`, pode usar o pacote `fabyo/sefaz-schemas` apontando direto para o ZIP gerado nas releases do GitHub.
+
+### 1. Configurar o `composer.json`
+
+No seu projeto PHP, adicione o repositório e o pacote assim:
+
+```json
+{
+    "name": "meu-projeto/minha-app",
+    "autoload": {
+        "psr-4": {
+            "Fabyo\\app\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fabyo",
+            "email": "fabyo.php@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "fabyo/sefaz-schemas": "dev-main"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "fabyo/sefaz-schemas",
+                "version": "dev-main",
+                "dist": {
+                    "url": "https://github.com/fabyo/sefaz-scraper/releases/latest/download/schemas-v4-latest.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        }
+    ]
+}
+```
+
+```bash
+composer require fabyo/sefaz-schemas:dev-main
+```
+
+---
+
 ## 🤖 Atualização automática com GitHub Actions
 
 A ideia é simples:  
