@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/Scraper-SEFAZ-4CAF50?style=for-the-badge" />
 </p>
 
+<img src="sefaz-scraper.png" alt="Golang" width="200" />
 
 Scraper em Go que acessa diretamente o portal da SEFAZ, baixa todos os arquivos **XSD** disponíveis e organiza tudo em uma estrutura de pastas bonitinha no repositório.  
 Além disso, o projeto já está preparado para rodar em **GitHub Actions** e manter esses XSD sempre atualizados automaticamente.
