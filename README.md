@@ -196,4 +196,4 @@ Você pode usar este repo de algumas formas:
 
 ---
 
-> Projeto pensado para quem trabalha com documentos fiscais eletrônicos e quer **controle total** sobre os XSD, com atualização automatizada e versionamento limpo.
+> Projeto pensado para quem trabalha com documentos fiscais eletrônicos e quer **controle total** sobre os XSD e que seja independente de linguagem de programação, com atualização automatizada e versionamento limpo.
