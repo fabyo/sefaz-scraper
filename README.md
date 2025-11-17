@@ -169,15 +169,14 @@ Você pode usar este repo de algumas formas:
 1. **Submódulo Git**  
    Adicionar como submódulo dentro do seu projeto fiscal (NFe, CT-e, etc.) e apontar o código para a pasta `schemas/`.
 
-2. **Importando como módulo Go (se exposto)**  
+2. **Importando como módulo Go**  
 
    ```go
    import "github.com/fabyo/sefaz-scraper"
    ```
 
-3. **Somente XSD versionado**  
+3. **Somente XSD versionado**
    Usar apenas a pasta `schemas/` como fonte “confiável” de XSD sempre atualizados.
-
 ---
 
 ## ✅ Objetivo
