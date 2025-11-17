@@ -1,0 +1,101 @@
+name: 🔄 Atualizar Schemas e Criar Release
+
+on:
+  # 1. Permite que você rode manualmente pela aba "Actions" do GitHub
+  workflow_dispatch:
+  
+  # 2. Roda automaticamente todo Domingo às 3:00 da manhã (UTC)
+  schedule:
+    - cron: '0 3 * * 0'
+
+jobs:
+  build-and-release:
+    # 3. Roda em uma máquina virtual Linux (Ubuntu)
+    runs-on: ubuntu-latest
+    
+    # 4. Dá permissões para o script:
+    #    - Fazer commit no seu repositório (atualizar os .xsd)
+    #    - Criar uma Release (para postar o .zip)
+    permissions:
+      contents: write
+
+    steps:
+      # --- ETAPA 1: PREPARAÇÃO ---
+      - name: 1. Checkout do seu código
+        uses: actions/checkout@v4
+
+      - name: 2. Setup do Go (versão 1.22 ou mais nova)
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: 3. Instalar dependências do Linux (O Chrome!)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      # --- ETAPA 2: RODAR O SCRAPER ---
+      - name: 4. Rodar o Scraper
+        run: |
+          # Baixa as dependências (chromedp, goquery, etc)
+          go mod tidy
+          
+          # Compila o executável
+          go build -o scraper main.go
+          
+          # Roda o scraper (ele vai criar a pasta schemas/v4)
+          ./scraper
+      
+      # --- ETAPA 3: CHECAR MUDANÇAS ---
+      - name: 5. Checar por mudanças nos schemas
+        id: git-check
+        run: |
+          # Checa se algum arquivo .xsd dentro da pasta schemas/v4 mudou
+          if git diff --quiet -- 'schemas/v4/*.xsd'; then
+            echo "✅ Sem mudanças nos schemas. Encerrando."
+            echo "changes-found=false" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Mudanças detectadas! Preparando para o commit e release..."
+            echo "changes-found=true" >> $GITHUB_OUTPUT
+          fi
+
+      # --- ETAPA 4: FAZER COMMIT (Se houver mudanças) ---
+      - name: 6. Fazer Commit das mudanças
+        # Só roda se a Etapa 5 encontrou mudanças
+        if: steps.git-check.outputs.changes-found == 'true'
+        run: |
+          git config user.name 'GitHub Actions Bot'
+          git config user.email 'actions@github.com'
+          git add schemas/v4/*.xsd
+          git commit -m "chore(schemas): Atualização automática dos schemas XSD 🤖"
+          git push
+
+      # --- ETAPA 5: CRIAR O ZIP (Se houver mudanças) ---
+      - name: 7. Criar Tag de Release (Data/Hora)
+        if: steps.git-check.outputs.changes-found == 'true'
+        id: tagger
+        run: |
+          # Cria uma tag única baseada na data, ex: v2025.11.17-1830
+          TAG_NAME="v$(date -u +'%Y.%m.%d-%H%M')"
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          
+      - name: 8. Zipar a pasta 'schemas'
+        if: steps.git-check.outputs.changes-found == 'true'
+        run: |
+          # Cria um .zip com todo o conteúdo da pasta schemas/v4
+          zip -r schemas-v4-latest.zip ./schemas/v4
+          
+      - name: 9. Criar a Release no GitHub
+        if: steps.git-check.outputs.changes-found == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          # Usa a tag que criamos
+          tag_name: ${{ steps.tagger.outputs.tag }}
+          
+          # Nome e descrição da Release
+          name: "Schemas NF-e/NFC-e (Atualizado em ${{ steps.tagger.outputs.tag }})"
+          body: "Atualização automática dos schemas XSD da SEFAZ. Este release contém a pasta `schemas/v4` com todos os arquivos .xsd mais recentes."
+          
+          # Anexa o .zip que criamos
+          files: |
+            schemas-v4-latest.zip
