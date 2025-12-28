@@ -163,6 +163,26 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="TTribNFGas">
+		<xs:annotation>
+			<xs:documentation>Grupo de informações da Tributação da NFGas</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CST" type="TCST">
+				<xs:annotation>
+					<xs:documentation>Código Situação Tributária do IBS/CBS</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cClassTrib" type="TcClassTrib"/>
+			<xs:element name="indDoacao" type="TIndDoacao" minOccurs="0"/>
+			<xs:element name="gIBSCBS" type="TCIBS" minOccurs="0"/>
+			<xs:element name="gEstornoCred" type="TEstornoCred" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Informado conforme indicador no cClassTrib</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="TTribNFAg">
 		<xs:annotation>
 			<xs:documentation>Grupo de informações da Tributação da NFAg</xs:documentation>
@@ -298,9 +318,9 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="TTribNFGas">
+	<xs:complexType name="TTribNFGasComMono">
 		<xs:annotation>
-			<xs:documentation>Grupo de informações da Tributação da NFGas</xs:documentation>
+			<xs:documentation>Grupo de informações da Tributação da NFGas com Monofasia</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="CST" type="TCST">
