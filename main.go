@@ -22,7 +22,6 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// (A função unzipAndExtractXSD continua exatamente a mesma)
 func unzipAndExtractXSD(data []byte, dest string) error {
 	r := bytes.NewReader(data)
 	zipReader, err := zip.NewReader(r, int64(len(data)))
@@ -58,7 +57,6 @@ func unzipAndExtractXSD(data []byte, dest string) error {
 	return nil
 }
 
-// (ReleasePackage, dateRegex, parseDate... tudo igual)
 type ReleasePackage struct {
 	URL  string
 	Date time.Time
@@ -80,7 +78,6 @@ func parseDate(dateStr string) (time.Time, error) {
 	return t, err
 }
 
-// (A função getRenderedHTML continua IDÊNTICA)
 func getRenderedHTML(pageURL string) (string, []*http.Cookie, error) {
 	log.Println("--- 🤖 Iniciando ChromeDP (navegador real) ---")
 
@@ -92,7 +89,7 @@ func getRenderedHTML(pageURL string) (string, []*http.Cookie, error) {
 
 	var htmlContent string
 	var cookies []*network.Cookie
-	var err error // Declarar err aqui para ser usada no ActionFunc
+	var err error
 	
 	err = chromedp.Run(ctx,
 		chromedp.Navigate(pageURL),
@@ -103,7 +100,6 @@ func getRenderedHTML(pageURL string) (string, []*http.Cookie, error) {
 		chromedp.WaitVisible(`#conteudo`, chromedp.ByID),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			log.Println("--- ✅ Página carregada e JS executado. Lendo HTML... ---")
-			// Pega os cookies DEPOIS que a página carregou
 			cookies, err = network.GetCookies().Do(ctx)
 			if err != nil {
 				return err
@@ -119,7 +115,6 @@ func getRenderedHTML(pageURL string) (string, []*http.Cookie, error) {
 
 	log.Println("--- ✅ HTML final e Cookies capturados com sucesso ---")
 
-	// Converte os cookies do ChromeDP para cookies HTTP padrão
 	httpCookies := make([]*http.Cookie, 0, len(cookies))
 	for _, c := range cookies {
 		httpCookies = append(httpCookies, &http.Cookie{
@@ -133,8 +128,6 @@ func getRenderedHTML(pageURL string) (string, []*http.Cookie, error) {
 	return htmlContent, httpCookies, nil
 }
 
-
-// (A função parseHTML continua IDÊNTICA)
 func parseHTML(htmlContent, baseURL string) ([]ReleasePackage, error) {
 	var packages []ReleasePackage
 	currentSection := ""
@@ -195,8 +188,10 @@ func parseHTML(htmlContent, baseURL string) ([]ReleasePackage, error) {
 				log.Printf("⚠️ Erro ao parsear data '%s' para: %s", dateStr, aTag.Text())
 				return
 			}
+			
+			// 🚀 MUDANÇA: Remove filtro de ano - pega TODOS os pacotes de 2017 em diante
 			if pubDate.Year() < 2017 {
-				//return
+				return // Ainda ignora muito antigos (pré-v4.00)
 			}
 			
 			cleanedLink := strings.TrimSpace(link)
@@ -221,8 +216,6 @@ func parseHTML(htmlContent, baseURL string) ([]ReleasePackage, error) {
 	return packages, nil
 }
 
-
-// --- (Função main COM A MUDANÇA DE LOG) ---
 func main() {
 	const extractionDir = "schemas/v4"
 	const sefazURL = "https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w="
@@ -274,16 +267,11 @@ func main() {
 			continue
 		}
 
-		// --- 🚀 A MUDANÇA ESTÁ AQUI ---
-		// Checagem de Content-Type (Sem log de erro para PDF/HTML)
 		contentType := resp.Header.Get("Content-Type")
 		if !strings.Contains(contentType, "zip") && !strings.Contains(contentType, "octet-stream") {
-			// A linha de log.Printf(...) foi REMOVIDA.
-			// Agora ele apenas ignora silenciosamente.
 			resp.Body.Close()
 			continue
 		}
-		// --- FIM DA MUDANÇA ---
 		
 		body, err := io.ReadAll(resp.Body)
 		resp.Body.Close()
