@@ -17,6 +17,7 @@
 <!-- PL_006n - 01/09/2012 - correções da NT 2012/003 -->
 <!-- PL_007   - 01/09/2012 - correções da NT 2012/004 NFC-e / NT 2013/003 -->
 <!-- PL_007a - 23/04/2013 -  Redução qtde. máxima ocorrências NFref; inclusão do elemento vTotTrib (NT 2013/003) -->
+<!-- PL_007b - 01/08/2013 - Inclusão de campos de controle Resolução 13: FCI (NT 2013/006) -->
 <xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/nfe" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"/>
 	<xs:include schemaLocation="tiposBasico_v3.00.xsd"/>
@@ -1045,6 +1046,11 @@ Formato ”CFOP9999”.</xs:documentation>
 															<xs:pattern value="[0-9]{1,6}"/>
 														</xs:restriction>
 													</xs:simpleType>
+												</xs:element>
+												<xs:element name="nFCI" type="TGuid" minOccurs="0">
+													<xs:annotation>
+														<xs:documentation>Número de controle da FCI - Ficha de Conteúdo de Importação.</xs:documentation>
+													</xs:annotation>
 												</xs:element>
 												<xs:choice minOccurs="0">
 													<xs:annotation>
@@ -6526,8 +6532,7 @@ alterado para tamanho variavel 1-4. (NT2011/004)</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>Tipo Origem da mercadoria CST ICMS  origem da mercadoria: 0-Nacional 
 1-Estrangeira - Importação direta; 2-Estrangeira - Adquirida no mercado interno; 3-Nacional, conteudo superior 40%; 4-Nacional, processos produtivos 
-básicos; 5-Nacional, conteudo inferior 40%; 6-Estrangeira - Importação direta, com similar nacional, lista CAMEX; 7-Estrangeira - mercado interno, sem simular,
-lista CAMEX.</xs:documentation>
+básicos; 5-Nacional, conteudo inferior 40%; 6-Estrangeira - Importação direta, com similar nacional, lista CAMEX; 7-Estrangeira - mercado interno, sem simular,lista CAMEX.8-Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:whiteSpace value="preserve"/>
@@ -6539,6 +6544,7 @@ lista CAMEX.</xs:documentation>
 			<xs:enumeration value="5"/>
 			<xs:enumeration value="6"/>
 			<xs:enumeration value="7"/>
+			<xs:enumeration value="8"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TFinNFe">
@@ -6781,6 +6787,15 @@ lista CAMEX.</xs:documentation>
 		<xs:restriction base="xs:string">
 			<xs:whiteSpace value="preserve"/>
 			<xs:pattern value="3\.00"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TGuid">
+		<xs:annotation>
+			<xs:documentation>Identificador único (Globally Unique Identifier)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="preserve"/>
+			<xs:pattern value="[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>
