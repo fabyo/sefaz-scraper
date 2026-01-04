@@ -196,7 +196,7 @@ func parseHTML(htmlContent, baseURL string) ([]ReleasePackage, error) {
 				return
 			}
 			if pubDate.Year() < 2017 {
-				return
+				//return
 			}
 			
 			cleanedLink := strings.TrimSpace(link)
