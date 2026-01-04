@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:nfe="http://www.portalfiscal.inf.br/nfe" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.00.xsd"/>
+	<xs:include schemaLocation="tiposNFe_v1.04.xsd"/>
+	<xs:element name="inutNFe">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação do Pedido de Inutilização de Numeração da Nota Fiscal Eletrônica</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="infInut">
+					<xs:annotation>
+						<xs:documentation>Dados do Pedido de Inutilização de Numeração da Nota Fiscal Eletrônica</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="xServ" fixed="INUTILIZAR">
+								<xs:annotation>
+									<xs:documentation>Serviço Solicitado</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="INUTILIZAR"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="cUF" type="nfe:TCodUfIBGE">
+								<xs:annotation>
+									<xs:documentation>Código da UF do emitente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="ano">
+								<xs:annotation>
+									<xs:documentation>Ano de inutilização da numeração</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:short">
+										<xs:pattern value="[0-9]{2}"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="CNPJ" type="nfe:TCnpj">
+								<xs:annotation>
+									<xs:documentation>CNPJ do emitente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="mod" type="nfe:TMod">
+								<xs:annotation>
+									<xs:documentation>Modelo da NF-e (55, etc.)</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="serie" type="nfe:TSerie">
+								<xs:annotation>
+									<xs:documentation>Série da NF-e</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="nNFIni" type="nfe:TNF">
+								<xs:annotation>
+									<xs:documentation>Número da NF-e inicial</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="nNFFin" type="nfe:TNF">
+								<xs:annotation>
+									<xs:documentation>Número da NF-e final</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Id" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="ds:Signature"/>
+			</xs:sequence>
+			<xs:attribute name="versao" use="required" fixed="1.04">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="4"/>
+						<xs:fractionDigits value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

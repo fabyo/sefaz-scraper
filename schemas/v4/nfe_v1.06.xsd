@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:nfe="http://www.portalfiscal.inf.br/nfe" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="nfeNFe_v1.06.xsd"/>
+	<xs:element name="NFe" type="nfe:TNFe">
+		<xs:annotation>
+			<xs:documentation>Nota Fiscal Eletrônica</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

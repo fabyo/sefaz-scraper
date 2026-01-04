@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:nfe="http://www.portalfiscal.inf.br/nfe" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.00.xsd"/>
+	<xs:include schemaLocation="tiposNFe_v1.03.xsd"/>
+	<xs:element name="retCancNFe">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação do retorno Pedido de Cancelamento da Nota Fiscal Eletrônica</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="infCanc">
+					<xs:annotation>
+						<xs:documentation>Dados do Resultado do Pedido de Cancelamento da Nota Fiscal Eletrônica</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="chNFe" type="nfe:TChNFe">
+								<xs:annotation>
+									<xs:documentation>Chaves de acesso da NF-e, compostas por: UF do emitente, AAMM da emissão da NFe, CNPJ do emitente, modelo, série e número da NF-e e código numérico + DV.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="dhRecbto" type="xs:dateTime">
+								<xs:annotation>
+									<xs:documentation>Data e hora de recebimento, no formato AAAA-MM-DDTHH:MM:SS. Deve ser preenchida com data e hora da gravação no Banco em caso de Confirmação. Em caso de Rejeição, com data e hora do recebimento do Pedido de Cancelamento.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="nProt" type="nfe:TProt" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Número do Protocolo de Status da NF-e. 1 posição (1 – Secretaria de Fazenda Estadual 2 – Receita Federal); 2 - códiga da UF - 2 posições ano; 10 seqüencial no ano.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="cStat" type="nfe:TStat">
+								<xs:annotation>
+									<xs:documentation>Código do status da mensagem enviada.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="xMotivo" type="nfe:TMotivo">
+								<xs:annotation>
+									<xs:documentation>Descrição literal do status do serviço solicitado.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Id" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="ds:Signature" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="versao" use="required" fixed="1.03">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="4"/>
+						<xs:fractionDigits value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

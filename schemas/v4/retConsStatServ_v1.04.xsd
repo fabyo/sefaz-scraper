@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:nfe="http://www.portalfiscal.inf.br/nfe" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="tiposNFe_v1.04.xsd"/>
+	<xs:element name="retConsStatServ">
+		<xs:annotation>
+			<xs:documentation>Schema XML de validação do Resultado da Consulta do Status do Serviço</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cUF" type="nfe:TUf">
+					<xs:annotation>
+						<xs:documentation>Código da UF responsável pelo serviço</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="dhRecbto" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>AAAA-MM-DDTHH:MM:SS</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="cStat" type="nfe:TStat">
+					<xs:annotation>
+						<xs:documentation>Código do status da mensagem enviada.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="xMotivo" type="nfe:TMotivo">
+					<xs:annotation>
+						<xs:documentation>Descrição literal do status do serviço solicitado.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="tMed">
+					<xs:annotation>
+						<xs:documentation>Tempo médio de resposta do serviço (em segundos) dos últimos 5 minutos</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:integer">
+							<xs:pattern value="[0-9]{1,4}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="dhRetorno" type="xs:dateTime" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>AAAA-MM-DDTHH:MM:SSDeve ser preenchida com data e hora previstas para o retorno dos serviços prestados.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="xObs" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Campo observação utilizado para incluir informações ao contribuinte</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:minLength value="1"/>
+							<xs:maxLength value="60"/>
+							<xs:whiteSpace value="collapse"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="versao" use="required" fixed="1.04">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="4"/>
+						<xs:fractionDigits value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
