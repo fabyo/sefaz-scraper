@@ -1,9 +1,10 @@
-name: 🔄 Atualizar Schemas e Criar Release
+name: Atualizar Schemas e Criar Release
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 3 * * 0'
+    # Segunda-feira as 03:00 UTC, 00:00 em America/Sao_Paulo.
+    - cron: "0 3 * * 1"
 
 jobs:
   build-and-release:
@@ -12,73 +13,79 @@ jobs:
       contents: write
 
     steps:
-      # --- ETAPAS 1-4 (Idênticas) ---
-      - name: 1. Checkout do seu código
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 2. Setup do Go
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.24.10"
+          cache: true
 
-      - name: 3. Instalar dependências do Linux (Chrome)
+      - name: Instalar Chromium
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
 
-      - name: 4. Rodar o Scraper
+      - name: Rodar scraper
         run: |
           go mod tidy
           go build -o scraper main.go
           ./scraper
-      
-      # --- ETAPAS 5-6 (Idênticas) ---
-      - name: 5. Checar por mudanças nos schemas
+
+      - name: Checar mudancas nos schemas
         id: git-check
         run: |
           if git diff --quiet -- 'schemas/v4/*.xsd'; then
-            echo "✅ Sem mudanças nos schemas."
-            echo "changes-found=false" >> $GITHUB_OUTPUT
+            echo "Sem mudancas nos schemas."
+            echo "changes-found=false" >> "$GITHUB_OUTPUT"
           else
-            echo "⚠️ Mudanças detectadas!"
-            echo "changes-found=true" >> $GITHUB_OUTPUT
+            echo "Mudancas detectadas nos schemas."
+            echo "changes-found=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: 6. Fazer Commit das mudanças
+      - name: Configurar Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Commitar schemas atualizados
         if: steps.git-check.outputs.changes-found == 'true'
         run: |
-          git config user.name 'GitHub Actions Bot'
-          git config user.email 'actions@github.com'
           git add schemas/v4/*.xsd
-          git commit -m "chore(schemas): Atualização automática dos schemas XSD 🤖"
+          git commit -m "chore(schemas): atualiza schemas XSD da SEFAZ"
           git push
 
-      # --- 🚀 MUDANÇA AQUI ---
-      - name: 7. Criar Tag de Release (Data/Hora)
-        # Vamos rodar este passo SEMPRE que houver mudanças OU for manual
+      - name: Registrar checagem sem mudanca
+        if: steps.git-check.outputs.changes-found == 'false' && github.event_name == 'schedule'
+        run: |
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/last-scrape-check.txt
+          git add .github/last-scrape-check.txt
+          git commit -m "chore(actions): registra checagem semanal da SEFAZ"
+          git push
+
+      - name: Criar tag de release
         if: github.event_name == 'workflow_dispatch' || steps.git-check.outputs.changes-found == 'true'
         id: tagger
         run: |
-          # Se houver mudanças, usa a data. Se for manual sem mudanças, usa o ID do run.
-          if [ "${{ steps.git-check.outputs.changes-found }}" == "true" ]; then
+          if [ "${{ steps.git-check.outputs.changes-found }}" = "true" ]; then
             TAG_NAME="v$(date -u +'%Y.%m.%d-%H%M')"
           else
             TAG_NAME="v${{ github.run_id }}-manual"
           fi
-          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
-          
-      - name: 8. Zipar a pasta 'schemas'
-        # Roda SEMPRE, para garantir que o .zip exista para o 1º release
+          echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Zipar schemas
+        if: github.event_name == 'workflow_dispatch' || steps.git-check.outputs.changes-found == 'true'
         run: |
           zip -r schemas-v4-latest.zip ./schemas/v4
-          
-      - name: 9. Criar a Release no GitHub
-        # Lógica corrigida: Roda se for manual OU se houver mudanças.
+
+      - name: Criar release
         if: github.event_name == 'workflow_dispatch' || steps.git-check.outputs.changes-found == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tagger.outputs.tag }}
           name: "Schemas NF-e/NFC-e (Auto-atualizado)"
-          body: "Atualização automática dos schemas XSD da SEFAZ. Este release contém a pasta `schemas/v4` com todos os arquivos .xsd mais recentes."
+          body: "Atualizacao automatica dos schemas XSD da SEFAZ. Este release contem a pasta schemas/v4 com todos os arquivos .xsd mais recentes."
           files: |
             schemas-v4-latest.zip
