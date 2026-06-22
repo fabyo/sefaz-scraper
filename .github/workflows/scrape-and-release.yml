@@ -2,12 +2,19 @@ name: Atualizar Schemas e Criar Release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/scrape-and-release.yml"
+      - "schemas/v4/**"
   schedule:
     # Segunda-feira as 03:00 UTC, 00:00 em America/Sao_Paulo.
     - cron: "0 3 * * 1"
 
 jobs:
   build-and-release:
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -65,23 +72,23 @@ jobs:
           git push
 
       - name: Criar tag de release
-        if: github.event_name == 'workflow_dispatch' || steps.git-check.outputs.changes-found == 'true'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.git-check.outputs.changes-found == 'true'
         id: tagger
         run: |
           if [ "${{ steps.git-check.outputs.changes-found }}" = "true" ]; then
             TAG_NAME="v$(date -u +'%Y.%m.%d-%H%M')"
           else
-            TAG_NAME="v${{ github.run_id }}-manual"
+            TAG_NAME="v${{ github.run_id }}-${{ github.event_name }}"
           fi
           echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Zipar schemas
-        if: github.event_name == 'workflow_dispatch' || steps.git-check.outputs.changes-found == 'true'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.git-check.outputs.changes-found == 'true'
         run: |
           zip -r schemas-v4-latest.zip ./schemas/v4
 
       - name: Criar release
-        if: github.event_name == 'workflow_dispatch' || steps.git-check.outputs.changes-found == 'true'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.git-check.outputs.changes-found == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tagger.outputs.tag }}
